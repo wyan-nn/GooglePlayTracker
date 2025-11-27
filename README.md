@@ -1,2 +1,2 @@
-# fintechs-reviews-bot
-To get fintech reviews from google maps
+# GooglePlayTracker
+To get fintechs' reviews and ratings from Google play
