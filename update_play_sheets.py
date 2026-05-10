@@ -47,26 +47,28 @@ def get_gsheet_client():
     return client
 
 
-def fetch_play_info(app_id: str, country: str = "sg", lang: str = "en") -> dict:
-    result = app(
-        app_id,
-        lang=lang,
-        country=country
-    )
-
-    return {
-        "title": result.get("title"),
-        "country": country,
-        "score": result.get("score"),
-        "ratings_count": result.get("ratings"),
-        "reviews_count": result.get("reviews"),
-        "realInstalls": result.get("realInstalls")
-                        or result.get("minInstalls")
-                        or result.get("installs"),
-        "version": result.get("version"),
-        "lastUpdatedOn": str(result.get("lastUpdatedOn") or result.get("updated")),
-    }
-
+def fetch_play_info(app_id: str, country: str = "sg", lang: str = "en") -> dict | None:
+    try:
+        result = app(
+            app_id,
+            lang=lang,
+            country=country
+        )
+        return {
+            "title": result.get("title"),
+            "country": country,
+            "score": result.get("score"),
+            "ratings_count": result.get("ratings"),
+            "reviews_count": result.get("reviews"),
+            "realInstalls": result.get("realInstalls")
+                            or result.get("minInstalls")
+                            or result.get("installs"),
+            "version": result.get("version"),
+            "lastUpdatedOn": str(result.get("lastUpdatedOn") or result.get("updated")),
+        }
+    except Exception as e:
+        print(f"  [SKIP] {app_id} / {country}: {e}")
+        return None
 
 def update_play_sheets():
     client = get_gsheet_client()
@@ -105,11 +107,12 @@ def update_play_sheets():
         app_id = app_info["id"]
 
         for country in GLOBAL_MARKETS:
-            info = fetch_play_info(app_id, country=country)
-
-            is_apac = country in APAC_MARKETS
-            is_focus = country in FOCUS_MARKETS
-
+    info = fetch_play_info(app_id, country=country)
+    if info is None:      # ← 加这两行
+        continue          # ← 
+    is_apac = country in APAC_MARKETS
+    is_focus = country in FOCUS_MARKETS
+    rows.append([...])
             rows.append([
                 now_iso,
                 alias,
