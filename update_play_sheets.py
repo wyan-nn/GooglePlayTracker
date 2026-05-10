@@ -105,14 +105,12 @@ def update_play_sheets():
     for app_info in APPS:
         alias = app_info["alias"]
         app_id = app_info["id"]
-
         for country in GLOBAL_MARKETS:
-    info = fetch_play_info(app_id, country=country)
-    if info is None:      # ← 加这两行
-        continue          # ← 
-    is_apac = country in APAC_MARKETS
-    is_focus = country in FOCUS_MARKETS
-    rows.append([...])
+            info = fetch_play_info(app_id, country=country)
+            if info is None:
+                continue
+            is_apac = country in APAC_MARKETS
+            is_focus = country in FOCUS_MARKETS
             rows.append([
                 now_iso,
                 alias,
@@ -127,7 +125,6 @@ def update_play_sheets():
                 is_apac,
                 is_focus,
             ])
-
     overview_ws.clear()
     overview_ws.append_row(header)
     if rows:
